@@ -1,8 +1,11 @@
 from bs4 import BeautifulSoup
 import requests
 import sys
-import datefinder
+import pandas_read_xml as pdx
+from datetime import datetime
 endpoint = r"https://www.sec.gov/cgi-bin/browse-edgar"
+#from pdStorage import Pandas_Data_Frame
+
 #pip install lxml
 #pip install beautifulsoup4
 #pip install python-xbrl
@@ -44,6 +47,7 @@ class GetCompanyInfo:
                         if lineArray[x].isdigit() == True:
                             cikArray.append(lineArray[x])
                     cikInt = ''.join(str(e) for e in cikArray)
+                    print(cikInt)
                     return cikInt
         print("Ticker not found, aborting program.")
         return 000
@@ -77,8 +81,37 @@ class Get_Data():
         # Exit if document link couldn't be found
         if doc_link == '':
             print("Couldn't find the document link")
-            sys.exit()
+            sys.exit("couldn't find link")
         return doc_link
+
+    def findYear(response, currentYear):
+        soup = BeautifulSoup(response.content, 'html.parser')
+        table_tag = soup.find('table', class_='tableFile2')
+        rows = table_tag.find_all('tr')
+        for row in rows:
+            cells = row.find_all('td')
+            if len(cells) > 3:
+                if currentYear in cells[3].text:
+                    return True
+        return False
+
+    def findYearPartTwo(response, currentYear):
+        soup = BeautifulSoup(response.content, 'html.parser')
+        table_tag = soup.find('table', class_='tableFile2')
+        rows = table_tag.find_all('tr')
+        for row in rows:
+            cells = row.find_all('td')
+            if len(cells) > 3:
+                if '[Amend]' in cells[2].text:
+                    return 0
+                else:
+                    if currentYear in cells[3].text:
+                        return 2021
+                    if '2020' in cells[3].text:
+                        return 2020
+                    if '2019' in cells[3].text:
+                        return 2019
+        return 0
 
     def getHTML(doc_link):
         # Obtain HTML for document page
@@ -101,7 +134,6 @@ class GET_XBRL():
                 elif 'XML' in cells[3].text:
                     xbrl_link = 'https://www.sec.gov' + cells[2].a['href']
 
-
         # Obtain XBRL text from document
         xbrl_resp = requests.get(xbrl_link)
         xbrl_str = xbrl_resp.text
@@ -118,26 +150,43 @@ class GET_XBRL():
         soup = BeautifulSoup(xbrl_str, 'lxml')
         tag_list = soup.find_all()
         for tag in tag_list: #need to figure out the list
+
             if tag.name == 'us-gaap:liabilities':
                 x = tag.attrs['contextref']
-                #print(x)
-                # class to figure out string length
-                #year = x[2] + x[3] + x[4] + x[5]
-                #month = x[7] + x[8]
-                #day = x[10] + x[11]
-                # month = "S"
-                # day = "s"
-                #print(tag)
-                print(tag.attrs['contextref'] + " Liabilities: " + tag.text)
+                print(tag)
+                #print(tag.attrs['contextref'] + " Liabilities: " + tag.text)
                 number = int(tag.text)
                 number = number / 1000
-                #print(number)
-                #Store_Date.store(year, month, day, tag.text)
-                #input_string = tag.attrs['contextref']
-                #matches = list(datefinder.find_dates(input_string))
-                #if len(matches) > 0:
-                    # date returned will be a datetime.datetime object. here we are only using the first match.
-                    #date = matches[0]
-                    #print(date)
-                #else:
-                    #print('No dates found')
+                #Pandas_Data_Frame.update_df(number)
+            
+            if tag.name == 'us-gaap:cash':
+                y = tag.attrs['contextref']
+                #if tag.attrs['contextref'] == 'YTD':
+                print(tag)
+                #print(tag.attrs['contextref'] + " Net: " + tag.text)
+
+            if tag.name == 'us-gaap:revenue':
+                y = tag.attrs['contextref']
+                #if tag.attrs['contextref'] == 'YTD':
+                print(tag)
+                #print(tag.attrs['contextref'] + " Net: " + tag.text)
+
+
+
+    def find_pandas(xbrl_str):
+        print("Hi")
+        test_zip_path = xbrl_str
+        root_key_list = ['F_000151']
+        df = pdx.read_xml(test_zip_path, root_key_list, transpose=True)
+        print(df)
+
+    # print(number)
+    # Store_Date.store(year, month, day, tag.text)
+    # input_string = tag.attrs['contextref']
+    # matches = list(datefinder.find_dates(input_string))
+    # if len(matches) > 0:
+    # date returned will be a datetime.datetime object. here we are only using the first match.
+    # date = matches[0]
+    # print(date)
+    # else:
+    # print('No dates found')
