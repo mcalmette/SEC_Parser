@@ -1,13 +1,13 @@
 from bs4 import BeautifulSoup
 import pandas as pd
-import re
-from tqdm import tqdm
 import numpy as np
 from liquidityRatios import Liquidity_Ratios
 from liquidityRatios import LiquidityDataFrame
 from profitibilityRatios import Profitibility_Ratios
 from profitibilityRatios import ProfitibilityDataFrame
-
+#import xlsxwriter
+#pip install xlrd
+#pip install openpyxl
 
 BalanceSheetDataFrame = pd.DataFrame({'Year': [2020, 2019, 2018, 2017, 2016, 2015]})
 cash = np.array([0, 0, 0, 0, 0, 0])
@@ -37,6 +37,7 @@ costsAndExpense = np.array([0, 0, 0, 0, 0, 0])
 operatingExpenses = np.array([0, 0, 0, 0, 0, 0])
 interestExpense = np.array([0, 0, 0, 0, 0, 0])
 interestIncomeExpense = np.array([0, 0, 0, 0, 0, 0])
+incomeBeforeTaxes = np.array([0, 0, 0, 0, 0, 0])
 operatingIncomeLoss = np.array([0, 0, 0, 0, 0, 0])
 netIncomeLoss = np.array([0, 0, 0, 0, 0, 0])
 netProfitLoss = np.array([0, 0, 0, 0, 0, 0])
@@ -49,7 +50,6 @@ CashStatmementDataFrame = pd.DataFrame({'Year': [2020, 2019, 2018, 2017, 2016, 2
 cashFromOperatingActivites = np.array([0, 0, 0, 0, 0, 0])
 cashFromInvestingActivities = np.array([0, 0, 0, 0, 0, 0])
 cashFromFinancingActivites = np.array([0, 0, 0, 0, 0, 0])
-
 
 class BalanceSheetStorage():
     def __init__(self, year):
@@ -99,7 +99,6 @@ class BalanceSheetStorage():
         if (np.count_nonzero(prepaidExpenses) != 0):
             prepaidExpenses1 = prepaidExpenses.astype(int)
             BalanceSheetDataFrame['Prepaid Expenses'] = prepaidExpenses1
-
 
         ##### INCOME STATEMENT ######
         if(np.count_nonzero(revenues) != 0):
@@ -151,6 +150,9 @@ class BalanceSheetStorage():
         if (np.count_nonzero(weightedAvgSharesDiluted) != 0):
             weightedAvgSharesDiluted1 = weightedAvgSharesDiluted.astype(int)
             IncomeStatementDataFrame['Avg Shares Outstanding Diluted'] = weightedAvgSharesDiluted1
+        if (np.count_nonzero(incomeBeforeTaxes) != 0):
+            incomeBeforeTaxes1 = incomeBeforeTaxes.astype(int)
+            IncomeStatementDataFrame['Income Before Taxes'] = incomeBeforeTaxes1
 
 
         ### Cash Flow Statement ###
@@ -166,20 +168,26 @@ class BalanceSheetStorage():
         print(BalanceSheetDataFrame)
         print(IncomeStatementDataFrame)
         print(CashStatmementDataFrame)
-        #ds = LiquidityDataFrame.T
-        #print(ds)
         print(LiquidityDataFrame)
         print(ProfitibilityDataFrame)
 
 
-    def create_csv(company_ticker):
-        #BalanceSheetDataFrame.to_csv(company_ticker)
-        #IncomeStatementDataFrame.to_csv(company_ticker)
-        with open(company_ticker, 'w') as f:
-            pd.concat([BalanceSheetDataFrame, IncomeStatementDataFrame, CashStatmementDataFrame], axis=1).to_csv(f)
+    def create_xlsx(company_ticker):
+        writer = pd.ExcelWriter(company_ticker + '.xlsx', engine='xlsxwriter')
+
+        #dataframe made on different worksheet.
+        BalanceSheetDataFrame.to_excel(writer, sheet_name='Balance Sheet')
+        IncomeStatementDataFrame.to_excel(writer, sheet_name='Income Statement')
+        CashStatmementDataFrame.to_excel(writer, sheet_name='Cash Flow')
+        ProfitibilityDataFrame.to_excel(writer, sheet_name='Profitibility Ratios')
+        LiquidityDataFrame.to_excel(writer, sheet_name='Liquidity Ratios')
+
+        writer.save()
+
 
 
     def liquidity(num):
+        #check if true
         if (num == 1):
             Liquidity_Ratios.current_ratio(currentAssets,currentLiabilities)
             Liquidity_Ratios.working_capital(currentAssets,currentLiabilities)
@@ -189,17 +197,17 @@ class BalanceSheetStorage():
 
             Profitibility_Ratios.gross_profit_margin(netRevenue,revenues,grossProfit)
             Profitibility_Ratios.net_margin(netRevenue,revenues,salesRevenue,netIncomeLoss)
-            #Profitibility_Ratios.eps_regular(eps)
-            #Profitibility_Ratios.eps_diluted(epsDiluted)
-            #Profitibility_Ratios.return_on_assets(netIncomeLoss,assets)
-            #Profitibility_Ratios.return_on_equity(netIncomeLoss,stockholdersequity)
-            #Profitibility_Ratios.free_cash_flow(cashFromOperatingActivites,interestExpense,cashFromInvestingActivities)
+            Profitibility_Ratios.eps_regular(eps)
+            Profitibility_Ratios.eps_diluted(epsDiluted)
+            Profitibility_Ratios.return_on_assets(netIncomeLoss,assets)
+            Profitibility_Ratios.return_on_equity(netIncomeLoss,stockholdersequity)
+            Profitibility_Ratios.free_cash_flow(cashFromOperatingActivites,interestExpense,cashFromInvestingActivities)
+            Profitibility_Ratios.interest_coverage(incomeBeforeTaxes,interestExpense,interestIncomeExpense)
 
 
     def find(xbrl_str,contextref,contextRefIncome, contextRefCash, YR):
         soup = BeautifulSoup(xbrl_str, 'lxml')
         tag_list = soup.find_all()
-        #for tag in tag_list:
         for tag in tag_list:
             if ('us-gaap:cashandcashequivalentsatcarryingvalue' in tag.name):
                 if (tag.text != '' and tag.name == 'us-gaap:cashandcashequivalentsatcarryingvalue'):
@@ -217,7 +225,6 @@ class BalanceSheetStorage():
                     currentLiabilitiesTag = float(tag.text)
                     x = tag.attrs['contextref']
                     get_generic_year(x,currentLiabilitiesTag,contextref,YR,currentLiabilities)
-
 
             if ('us-gaap:assets' in tag.name):
                 if(tag.text != '' and tag.name == 'us-gaap:assets'):
@@ -379,9 +386,13 @@ class BalanceSheetStorage():
                     x = tag.attrs['contextref']
                     get_generic_year(x,float(tag.text),contextRefIncome,YR,weightedAvgSharesDiluted)
 
+            if ('us-gaap:incomelossfromcontinuingoperationsbeforeincometaxesminorityinterestandincomeloss' in tag.name):
+                if (tag.text != ''):
+                    x = tag.attrs['contextref']
+                    get_generic_year(x,float(tag.text),contextRefIncome,YR,incomeBeforeTaxes)
+
 
             #### Cash Statement #####
-
             if ('us-gaap:netcashprovidedbyusedinoperatingactivities' in tag.name):
                 if (tag.text != '' and tag.name == 'us-gaap:netcashprovidedbyusedinoperatingactivities'):
                     x = tag.attrs['contextref']

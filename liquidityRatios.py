@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-
 LiquidityDataFrame = pd.DataFrame({'Year': ['2020', '2019', '2018', '2017', '2016', '2015']})
 
 

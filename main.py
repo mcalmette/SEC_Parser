@@ -2,32 +2,21 @@ from companyInfo import GetCompanyInfo
 from companyInfo import Get_URL
 from companyInfo import Get_Data
 from companyInfo import GET_XBRL
-from pdStorage import Store_data
 from balanceSheet import BalanceSheetStorage
 from contextRefId import retrieve
 from contextRefId import retrieveYear
 from contextRefId import retrieveIncome
 from contextRefId import retrieveCash
-#from liquidityRatios import CurrentRatio
-#from liquidityRatios import WorkingCapital
-#from liquidityRatios import TotalLiabilities
-#from incomeStatement import IncomeStatementStorage
-
-from bs4 import BeautifulSoup
-import requests
-import sys
 from datetime import date
-from time import sleep
 from tqdm import tqdm
-from tqdm import trange
-from colorama import Fore
+
 
 
 today = date.today()
 currentDate = today.strftime("%Y%m%d")
 currentYearString = today.strftime("%Y")
 form = '10-K'
-company_ticker = 'qrvo'
+company_ticker = 'mu'
 endpoint = r"https://www.sec.gov/cgi-bin/browse-edgar"
 
 
@@ -131,7 +120,7 @@ if __name__ == '__main__':
 
     BalanceSheetStorage.liquidity(1)
     BalanceSheetStorage.printPandas()
-    #BalanceSheetStorage.create_csv(company_ticker+'.csv')
+    BalanceSheetStorage.create_xlsx(company_ticker)
 
 
 

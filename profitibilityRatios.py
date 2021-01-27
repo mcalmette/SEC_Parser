@@ -1,11 +1,8 @@
 import pandas as pd
 import numpy as np
-
 ProfitibilityDataFrame = pd.DataFrame({'Year': ['2020', '2019', '2018', '2017', '2016', '2015']})
 
-
 class Profitibility_Ratios():
-
     def gross_profit_margin(rev,revs,gp):
         i = 0
         grossMargin = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -89,3 +86,21 @@ class Profitibility_Ratios():
             i = i + 1
         if (np.count_nonzero(fcf) != 0):
             ProfitibilityDataFrame['Free Cash Flow'] = fcf
+
+    def interest_coverage(inc,int1,int2):
+        i = 0
+        icr = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        if (np.count_nonzero(int1) != 0):
+            interest = int1
+        elif (np.count_nonzero(int2) != 0):
+            interest = int2
+        else:
+            interest = [0, 0, 0, 0, 0, 0]
+
+        while (i < len(interest)):
+            if (inc[i] != 0 and interest[i] != 0):
+                x = inc[i] / interest[i]
+                icr[i] = round(x,3)
+            i = i+1
+        if (np.count_nonzero(icr) != 0):
+            ProfitibilityDataFrame['Interest Coverage Ratio'] = icr
