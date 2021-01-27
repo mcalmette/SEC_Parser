@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     BalanceSheetStorage.liquidity(1)
     BalanceSheetStorage.printPandas()
-    BalanceSheetStorage.create_xlsx(company_ticker)
+    #BalanceSheetStorage.create_xlsx(company_ticker)
 
 
 
