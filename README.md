@@ -1,5 +1,5 @@
 # SEC_Parser
-## Usage: Python 3.8
+## Usage: Python 3
 
 ## Libraries Installations
 ```
