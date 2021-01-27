@@ -2,16 +2,13 @@ from bs4 import BeautifulSoup
 import requests
 import sys
 import pandas_read_xml as pdx
-from datetime import datetime
 endpoint = r"https://www.sec.gov/cgi-bin/browse-edgar"
-#from pdStorage import Pandas_Data_Frame
 
 #pip install lxml
 #pip install beautifulsoup4
 #pip install python-xbrl
 #pip install xmlschema
 #pip install datefinder
-
 
 class GetCompanyInfo:
     def __init__(self,ticker,dateb, form):
@@ -51,7 +48,7 @@ class GetCompanyInfo:
                     return cikInt
         print("Ticker not found, aborting program.")
         return 000
-        #need to quit program
+        #quit program
 
     def get_dateb(self):
         return self.dateb
@@ -62,7 +59,6 @@ class GetCompanyInfo:
 
 class Get_URL():
     def retrieve(endpoint,param_dict):
-        doc_link = ''
         response = requests.get(url=endpoint, params=param_dict)
         print(response.url)
         return response
@@ -78,7 +74,7 @@ class Get_Data():
             if len(cells) > 3:
                 if year in cells[3].text:
                     doc_link = 'https://www.sec.gov' + cells[1].a['href']
-        # Exit if document link couldn't be found
+        # Exit if link couldn't be found
         if doc_link == '':
             print("Couldn't find the document link")
             sys.exit("couldn't find link")
@@ -142,36 +138,6 @@ class GET_XBRL():
 
     def test_other_method(doc_str):
         print("test")
-        #ITS the INS
-
-
-    def find(xbrl_str):
-        # Find and print stockholder's equity
-        soup = BeautifulSoup(xbrl_str, 'lxml')
-        tag_list = soup.find_all()
-        for tag in tag_list: #need to figure out the list
-
-            if tag.name == 'us-gaap:liabilities':
-                x = tag.attrs['contextref']
-                print(tag)
-                #print(tag.attrs['contextref'] + " Liabilities: " + tag.text)
-                number = int(tag.text)
-                number = number / 1000
-                #Pandas_Data_Frame.update_df(number)
-            
-            if tag.name == 'us-gaap:cash':
-                y = tag.attrs['contextref']
-                #if tag.attrs['contextref'] == 'YTD':
-                print(tag)
-                #print(tag.attrs['contextref'] + " Net: " + tag.text)
-
-            if tag.name == 'us-gaap:revenue':
-                y = tag.attrs['contextref']
-                #if tag.attrs['contextref'] == 'YTD':
-                print(tag)
-                #print(tag.attrs['contextref'] + " Net: " + tag.text)
-
-
 
     def find_pandas(xbrl_str):
         print("Hi")
@@ -180,13 +146,3 @@ class GET_XBRL():
         df = pdx.read_xml(test_zip_path, root_key_list, transpose=True)
         print(df)
 
-    # print(number)
-    # Store_Date.store(year, month, day, tag.text)
-    # input_string = tag.attrs['contextref']
-    # matches = list(datefinder.find_dates(input_string))
-    # if len(matches) > 0:
-    # date returned will be a datetime.datetime object. here we are only using the first match.
-    # date = matches[0]
-    # print(date)
-    # else:
-    # print('No dates found')

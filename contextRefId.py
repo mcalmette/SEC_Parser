@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-
 def retrieve(xbrl_str):
     soup = BeautifulSoup(xbrl_str, 'lxml')
     tag_list = soup.find_all()
@@ -30,7 +29,6 @@ def retrieveCash(xbrl_str):
                 x = (tag['contextref'])
                 return x
     return 0
-
 
 
 def retrieveYear(xbrl_str):
