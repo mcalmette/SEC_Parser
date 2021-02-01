@@ -1,6 +1,6 @@
 # SEC_Parser
 
-![alt text](https://forthebadge.com/images/badges/made-with-python.svg)
+![alt text](https://forthebadge.com/images/badges/made-with-python.svg) ![alt text](https://forthebadge.com/images/badges/powered-by-coffee.svg)
 
 ## Usage: Python 3
 
