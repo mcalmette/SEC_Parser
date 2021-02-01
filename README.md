@@ -24,5 +24,4 @@ Note: Amended reports do not contain proper data and the program will terminate.
 
 ## Stock Ticker
 To select the stock, type in the stock ticker and the file type (10-K or 10-Q). 
-![Untitledstock](https://user-images.githubusercontent.com/56742122/106424047-64e94780-6416-11eb-800b-d33e55ac4189.gif)
 
