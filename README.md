@@ -12,3 +12,9 @@ pip install tqdm
 pip install numpy
 
 ```
+
+## About
+Program was designed and built to quickly parse and store 10-K and 10-Q financial data from the SEC website. By using any stock ticker, the program searches for the company central index key housed in the letter files. With the param dictionary with company ticker, filing type, and date, it searches and stores with type 'XML'. The XML files are stored and parsed using Beautiful Soup's lxml for key values in the balance sheet, income statement, and cash flow statement.
+
+
+Note: Amended files by companies do not contain any data and the program will terminate. 
