@@ -1,6 +1,8 @@
 # SEC_Parser
 ## Usage: Python 3
 
+https://forthebadge.com/images/badges/made-with-python.svg
+
 ## Libraries Installations
 ```
 pip install lxml
