@@ -5,6 +5,8 @@ from liquidityRatios import Liquidity_Ratios
 from liquidityRatios import LiquidityDataFrame
 from profitibilityRatios import Profitibility_Ratios
 from profitibilityRatios import ProfitibilityDataFrame
+from solvencyRatios import Solvency_Ratios
+from solvencyRatios import SolvencyDataFrame
 #import xlsxwriter
 #pip install xlrd
 #pip install openpyxl
@@ -14,6 +16,7 @@ cash = np.array([0, 0, 0, 0, 0, 0])
 currentAssets = np.array([0, 0, 0, 0, 0, 0])
 currentLiabilities = np.array([0, 0, 0, 0, 0, 0])
 assets = np.array([0, 0, 0, 0, 0, 0])
+liabilities = np.array([0, 0, 0, 0, 0, 0])
 lase = np.array([0, 0, 0, 0, 0, 0])
 stockholdersequity = np.array([0, 0, 0, 0, 0, 0])
 accountsReceivable = np.array([0, 0, 0, 0, 0, 0])
@@ -69,6 +72,9 @@ class BalanceSheetStorage():
         if (np.count_nonzero(assets) != 0):
             assets1 = assets.astype(int)
             BalanceSheetDataFrame['Assets'] = assets1
+        if (np.count_nonzero(liabilities) != 0):
+            liabilities1 = liabilities.astype(int)
+            BalanceSheetDataFrame['Liabilities'] = liabilities1
         if (np.count_nonzero(lase) != 0):
             lase1 = lase.astype(int)
             BalanceSheetDataFrame['Liabilities and SE'] = lase1
@@ -99,6 +105,7 @@ class BalanceSheetStorage():
         if (np.count_nonzero(prepaidExpenses) != 0):
             prepaidExpenses1 = prepaidExpenses.astype(int)
             BalanceSheetDataFrame['Prepaid Expenses'] = prepaidExpenses1
+
 
         ##### INCOME STATEMENT ######
         if(np.count_nonzero(revenues) != 0):
@@ -170,17 +177,31 @@ class BalanceSheetStorage():
         print(CashStatmementDataFrame)
         print(LiquidityDataFrame)
         print(ProfitibilityDataFrame)
+        #print(SolvencyDataFrame)
 
 
-    def create_xlsx(company_ticker):
+    def create_xlsx(company_ticker, transpose):
         writer = pd.ExcelWriter(company_ticker + '.xlsx', engine='xlsxwriter')
 
         #dataframe made on different worksheet.
-        BalanceSheetDataFrame.to_excel(writer, sheet_name='Balance Sheet')
-        IncomeStatementDataFrame.to_excel(writer, sheet_name='Income Statement')
-        CashStatmementDataFrame.to_excel(writer, sheet_name='Cash Flow')
-        ProfitibilityDataFrame.to_excel(writer, sheet_name='Profitibility Ratios')
-        LiquidityDataFrame.to_excel(writer, sheet_name='Liquidity Ratios')
+        if(transpose == False):
+            BalanceSheetDataFrame.to_excel(writer, sheet_name='Balance Sheet')
+            IncomeStatementDataFrame.to_excel(writer, sheet_name='Income Statement')
+            CashStatmementDataFrame.to_excel(writer, sheet_name='Cash Flow')
+            ProfitibilityDataFrame.to_excel(writer, sheet_name='Profitibility Ratios')
+            LiquidityDataFrame.to_excel(writer, sheet_name='Liquidity Ratios')
+        else:
+            bal = BalanceSheetDataFrame.T
+            inc = IncomeStatementDataFrame.T
+            cashstate = CashStatmementDataFrame.T
+            prof = ProfitibilityDataFrame.T
+            lt = LiquidityDataFrame.T
+
+            bal.to_excel(writer, sheet_name='Balance Sheet')
+            inc.to_excel(writer, sheet_name='Income Statement')
+            cashstate.to_excel(writer, sheet_name='Cash Flow')
+            prof.to_excel(writer, sheet_name='Profitibility Ratios')
+            lt.to_excel(writer, sheet_name='Liquidity Ratios')
 
         writer.save()
 
@@ -203,6 +224,11 @@ class BalanceSheetStorage():
             Profitibility_Ratios.return_on_equity(netIncomeLoss,stockholdersequity)
             Profitibility_Ratios.free_cash_flow(cashFromOperatingActivites,interestExpense,cashFromInvestingActivities)
             Profitibility_Ratios.interest_coverage(incomeBeforeTaxes,interestExpense,interestIncomeExpense)
+
+            Solvency_Ratios.asset_equity_ratio(assets,stockholdersequity)
+            Solvency_Ratios.debt_equity_ratio(liabilities,stockholdersequity)
+            Solvency_Ratios.equity_multiplier(assets,stockholdersequity)
+
 
 
     def find(xbrl_str,contextref,contextRefIncome, contextRefCash, YR):
@@ -231,6 +257,12 @@ class BalanceSheetStorage():
                     assetsTag = float(tag.text)
                     x = tag.attrs['contextref']
                     get_generic_year(x,assetsTag,contextref,YR,assets)
+
+            if ('us-gaap:liabilities' in tag.name):
+                if(tag.text != '' and tag.name == 'us-gaap:liabilities'):
+                    liabTag = float(tag.text)
+                    x = tag.attrs['contextref']
+                    get_generic_year(x,liabTag,contextref,YR,liabilities)
 
             if ('us-gaap:liabilitiesandstockholdersequity' in tag.name):
                 if (tag.text != '' and tag.name == 'us-gaap:liabilitiesandstockholdersequity'):

@@ -10,14 +10,13 @@ from contextRefId import retrieveCash
 from datetime import date
 from tqdm import tqdm
 
-
-
 today = date.today()
 currentDate = today.strftime("%Y%m%d")
 currentYearString = today.strftime("%Y")
 form = '10-K'
-company_ticker = 'mu'
+company_ticker = 'aapl'
 endpoint = r"https://www.sec.gov/cgi-bin/browse-edgar"
+transpose = False
 
 
 if __name__ == '__main__':
@@ -120,7 +119,7 @@ if __name__ == '__main__':
 
     BalanceSheetStorage.liquidity(1)
     BalanceSheetStorage.printPandas()
-    #BalanceSheetStorage.create_xlsx(company_ticker)
+    #BalanceSheetStorage.create_xlsx(company_ticker,transpose)
 
 
 
