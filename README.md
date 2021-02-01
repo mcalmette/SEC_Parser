@@ -1,6 +1,6 @@
 # SEC_Parser
 
-![alt text](https://forthebadge.com/images/badges/made-with-python.svg) ![alt text](https://forthebadge.com/images/badges/powered-by-coffee.svg)
+![alt text](https://forthebadge.com/images/badges/made-with-python.svg) 
 
 ## Usage: Python 3
 
@@ -23,4 +23,6 @@ Program was designed and built to quickly parse and store 10-K and 10-Q financia
 Note: Amended reports do not contain proper data and the program will terminate. 
 
 ## Stock Ticker
-<img width="529" alt="Screen Shot 2021-01-31 at 10 12 13 PM" src="https://user-images.githubusercontent.com/56742122/106423132-ae389780-6414-11eb-99df-d4cb600a4984.png">
+To select the stock, type in the stock ticker and the file type (10-K or 10-Q). 
+![Untitledstock](https://user-images.githubusercontent.com/56742122/106424047-64e94780-6416-11eb-800b-d33e55ac4189.gif)
+
