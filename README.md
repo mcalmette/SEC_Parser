@@ -28,6 +28,13 @@ In main.py, enter the stock ticker and the file type (10-K or 10-Q). A false tra
 <img width="330" alt="Screen Shot 2021-01-31 at 10 51 33 PM" src="https://user-images.githubusercontent.com/56742122/106424377-eb058e00-6416-11eb-8f1f-26b5c5f8f76d.png">
 
 
+
+
+![loadingGif](https://user-images.githubusercontent.com/56742122/106427098-9dd7eb00-641b-11eb-8c0e-ea1abbe71663.gif)
+
+
+
+
 ## Ratios 
 List of calculations and definitions for ratio analysis. 
 
