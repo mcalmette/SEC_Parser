@@ -22,7 +22,7 @@ Program was designed and built to quickly parse and store 10-K and 10-Q financia
 Note: Amended reports do not contain proper data and the program will terminate. 
 
 ## Specification
-In main.py, enter the stock ticker and the file type (10-K or 10-Q). A false transpose will have values horizontally saved in excel file (see end screenshot for difference).
+In main.py, enter the stock ticker and the file type (10-K or 10-Q). A false transpose will have values horizontally saved in excel file.
 
 <img width="330" alt="Screen Shot 2021-01-31 at 10 51 33 PM" src="https://user-images.githubusercontent.com/56742122/106424377-eb058e00-6416-11eb-8f1f-26b5c5f8f76d.png">
 
