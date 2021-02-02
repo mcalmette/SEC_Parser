@@ -13,7 +13,6 @@ pip install xmlschema
 pip install pandas
 pip install tqdm
 pip install numpy
-
 ```
 
 ## About
@@ -27,9 +26,14 @@ In main.py, enter the stock ticker and the file type (10-K or 10-Q). A false tra
 
 <img width="330" alt="Screen Shot 2021-01-31 at 10 51 33 PM" src="https://user-images.githubusercontent.com/56742122/106424377-eb058e00-6416-11eb-8f1f-26b5c5f8f76d.png">
 
+The program prints out the link to the SEC website with EDGAR's search results housing the documentation. The following are links to the 10-K XML files.
 
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/56742122/106427380-1c348d00-641c-11eb-843f-f62988727df0.gif)
 
+
+After running, an xlsx file will be created in the project file with the ticker as the file name. This can be opened either in the IDE or in the project folder.
+
+![apple_gif](https://user-images.githubusercontent.com/56742122/106561512-aa247c80-64dd-11eb-9798-b80086ce54ac.gif)
 
 
 ## Ratios 
