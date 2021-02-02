@@ -38,6 +38,7 @@ After running, an xlsx file will be created in the project file with the ticker 
 
 ## Ratios 
 List of calculations and definitions for ratio analysis. 
+![Ratio Derivations](https://github.com/mcalmette/SEC_Parser/blob/master/Ratios.md)
 
 ## Technical Analysis
 ![Technical Analysis](https://github.com/mcalmette/TechnicalAnalysis)
